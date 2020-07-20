@@ -136,7 +136,6 @@ Suggestions/improvements
 * Bash prompt - change the color of '$' in the prompt to red if last process exited with error
 * Customization of screen and [tmux](https://github.com/gpakosz/.tmux)
 * Don't force en_US locale, this is per user (I set mine in ~/.extra)
-* cp_p command to copy with progress (uses rsync)
 * macOS hot corners adjusted my needs
 * Sane defaults on Linux, don't alias functions that don't work.
 * Change ip alias to myip (ip is a system command on Linux). Alias ip to myip on macOS. Support colorification for ip

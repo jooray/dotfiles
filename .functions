@@ -208,11 +208,6 @@ function tre() {
 	tree -aC -I '.git|node_modules|bower_components' --dirsfirst "$@" | less -FRNX;
 }
 
-# Copy w/ progress
-cp_p () {
-  rsync -WavP --human-readable --progress "$1" "$2"
-}
-
 if [ $(uname) == "Darwin" ]
 then
 

@@ -342,17 +342,6 @@ www.github.com
      16 10 directories, 3 files
 ```
 
-`cp_p` Copy with progress
-```
-/tmp/dotfiles$ cp_p file1 file2
-sending incremental file list
-file1
-              7 100%    0.00kB/s    0:00:00 (xfr#1, to-chk=0/1)
-
-sent 98 bytes  received 35 bytes  266.00 bytes/sec
-total size is 7  speedup is 0.05
-```
-
 **Videos**
 
 `gifify` animated gifs from any video (via `ffmpeg`)
