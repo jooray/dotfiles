@@ -179,9 +179,7 @@
 	insteadOf = "gist:"
 
 [init]
+	defaultBranch = main
 
-	templateDir = ~/.config/git/template/
 [include]
-
-		path = ~/.gitconfig.local
-
+  path = ~/.gitconfig.local
