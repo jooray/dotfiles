@@ -26,6 +26,7 @@ brew cask install java
 brew cask install mark-text
 brew cask install keybase
 brew cask install vimr
+brew cask install dozer
 
 # quicklook plugins
 brew cask install qlmarkdown
