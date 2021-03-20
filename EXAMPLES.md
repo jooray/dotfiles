@@ -342,6 +342,20 @@ www.github.com
      16 10 directories, 3 files
 ```
 
+**Presentation, desktop icons and do not disturb**
+
+`presentation on` turns on presentation mode - hides desktop icons, turns on do not disturb
+
+`presentation off` turns off presentation mode
+
+`dnd on` - turns on do not disturb
+
+`dnd off` - turns on do not disturb
+
+`hidedesktop` - hides desktop icons
+
+`showdesktop` - shows desktop icons
+
 **Videos**
 
 `gifify` animated gifs from any video (via `ffmpeg`)
