@@ -223,6 +223,22 @@ then
 			echo -e "Recent camera uses:\n$usedby"
 	}
 
+  # do not disturb mode
+  dnd() {
+			if [ "$1" == "off" ]; then
+			  defaults -currentHost write ~/Library/Preferences/ByHost/com.apple.notificationcenterui doNotDisturb -boolean false
+			else
+			  defaults -currentHost write ~/Library/Preferences/ByHost/com.apple.notificationcenterui doNotDisturb -boolean true
+			  defaults -currentHost write ~/Library/Preferences/ByHost/com.apple.notificationcenterui doNotDisturbDate -date "`date -u +\"%Y-%m-%d %H:%M:%S +000\"`"
+      fi
+		  killall NotificationCenter
+  }
+
+  # presentation mode - hides desktop icons and turns on do not disturb mode
+  presentation() {
+			dnd "$1"
+			if [ "$1" == "off" ]; then showdesktop; else hidedesktop; fi
+  }
 fi
 
 # movie goodies
