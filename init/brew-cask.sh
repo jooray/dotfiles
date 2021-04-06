@@ -44,3 +44,4 @@ brew install font-fira-code
 brew install font-hack
 
 brew install webtorrent
+brew install ngrok
