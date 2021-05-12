@@ -179,7 +179,13 @@
 	insteadOf = "gist:"
 
 [init]
-	defaultBranch = main
 
+	templateDir = ~/.config/git/template/
+	defaultBranch = main
 [include]
-  path = ~/.gitconfig.local
+
+		path = ~/.gitconfig.local
+
+[user]
+	name = Juraj Bednar
+	email = juraj@bednar.io
