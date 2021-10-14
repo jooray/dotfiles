@@ -186,6 +186,3 @@
 
 		path = ~/.gitconfig.local
 
-[user]
-	name = Juraj Bednar
-	email = juraj@bednar.io
