@@ -14,6 +14,7 @@ brew install iterm2
 brew install tor-browser
 brew install brave-browser
 brew install onionshare
+mkdir -p ~/.bin
 ln -s /Applications/OnionShare.app/Contents/MacOS/onionshare ~/.bin/
 brew install vlc
 #brew install spectacle
