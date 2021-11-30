@@ -28,20 +28,9 @@ brew install keybase
 brew install vimr
 brew install dozer
 
-# quicklook plugins
-brew install qlmarkdown
-brew install quicklook-json
-brew install qlprettypatch
-brew install quicklook-csv
-brew install webpquicklook
-brew install qlcolorcode
-brew install suspicious-package
-
 # fonts
 brew tap homebrew/cask-fonts
 brew install font-inconsolata
 brew install font-fira-code
 brew install font-hack
 
-brew install webtorrent
-brew install ngrok
