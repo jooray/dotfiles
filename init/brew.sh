@@ -178,6 +178,8 @@ brew install rclone
 brew install ffsend
 brew install magic-wormhole
 
+brew install nnn
+
 cat << EOF
 
 For setup instructions for dnscrypt-proxy (encrypted DNS requests) read:
