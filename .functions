@@ -487,6 +487,11 @@ function eurtobtc() { curl -A cURL -s https://btc.rate.sx/`urlencode "$1"`EUR | 
 function btctoeur() { curl -A cURL -s https://eur.rate.sx/`urlencode "$1"`BTC| tee >(pbcopy) ; }
 function usdtobtc() { curl -A cURL -s https://btc.rate.sx/`urlencode "$1"`USD | tee >(pbcopy) ; }
 function btctousd() { curl -A cURL -s https://usd.rate.sx/`urlencode "$1"`BTC| tee >(pbcopy) ; }
+function eurtoxmr() { curl -A cURL -s https://xmr.rate.sx/`urlencode "$1"`EUR | tee >(pbcopy) ; }
+function xmrtoeur() { curl -A cURL -s https://eur.rate.sx/`urlencode "$1"`XMR| tee >(pbcopy) ; }
+function usdtoxmr() { curl -A cURL -s https://xmr.rate.sx/`urlencode "$1"`USD | tee >(pbcopy) ; }
+function xmrtousd() { curl -A cURL -s https://usd.rate.sx/`urlencode "$1"`XMR| tee >(pbcopy) ; }
+
 
 # nmap through shodan
 function nmapshodan() {
