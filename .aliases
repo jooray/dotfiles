@@ -191,8 +191,8 @@ then
 
   # Show active network interfaces
 	GRCAT=`which grcat 2>/dev/null`
-	if [ "$TERM" != dumb ] && [ -n "$GRCAT" ] && [ -r /usr/local/share/grc/conf.ifconfig ]; then
-			alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active' | grcat /usr/local/share/grc/conf.ifconfig"
+	if [ "$TERM" != dumb ] && [ -n "$GRCAT" ] && [ -r "$(brew --prefix)/share/grc/conf.ifconfig" ]; then
+			alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active' | grcat $(brew --prefix)/share/grc/conf.ifconfig"
 	else
 			alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
 	fi
