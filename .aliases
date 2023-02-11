@@ -86,7 +86,7 @@ command -v sha1sum > /dev/null || alias sha1sum="shasum"
 alias cleanup="find . -type f -name '*.DS_Store' -ls -delete"
 
 # URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+alias urlencode='python -c "import sys, urllib.parse as ulp; print(ulp.quote_plus(sys.argv[1]));"'
 
 # Merge PDF files, preserving hyperlinks
 # Usage: `mergepdf input{1,2,3}.pdf`
