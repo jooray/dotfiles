@@ -484,8 +484,10 @@ function vcssh {
 function sattobtc() { calc "$1" '/' 100000000 | tee >(pbcopy) ; }
 function btctosat() { calc "$1" '*' 100000000 | tee >(pbcopy) ; }
 function eurtobtc() { curl -A cURL -s https://btc.rate.sx/`urlencode "$1"`EUR | tee >(pbcopy) ; }
+function eurtosat() { calc $(curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")EUR) '*' 100000000 | sed -e 's/\..*//' | tee >(pbcopy) ; }
 function btctoeur() { curl -A cURL -s https://eur.rate.sx/`urlencode "$1"`BTC| tee >(pbcopy) ; }
 function usdtobtc() { curl -A cURL -s https://btc.rate.sx/`urlencode "$1"`USD | tee >(pbcopy) ; }
+function usdtosat() { calc $(curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")USD) '*' 100000000 | sed -e 's/\..*//' | tee >(pbcopy) ; }
 function btctousd() { curl -A cURL -s https://usd.rate.sx/`urlencode "$1"`BTC| tee >(pbcopy) ; }
 function eurtoxmr() { curl -A cURL -s https://xmr.rate.sx/`urlencode "$1"`EUR | tee >(pbcopy) ; }
 function xmrtoeur() { curl -A cURL -s https://eur.rate.sx/`urlencode "$1"`XMR| tee >(pbcopy) ; }
