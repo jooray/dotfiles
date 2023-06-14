@@ -155,8 +155,8 @@ fi
 if [ $(uname) == "Darwin" ]
 then
 
-  # Get macOS Software Updates, and update installed App Store apps, Ruby gems, Homebrew, npm, and their installed packages
-  alias update='sudo -- sh -c "softwareupdate -i -a; /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -license accept ; gem update --system; gem update ; gem cleanup" ; if hash mas 2>/dev/null; then mas upgrade; fi; brew update; brew upgrade; brew cleanup; npm install npm -g; npm update -g; '
+  # Get macOS Software Updates, and update installed App Store apps, Homebrew, npm, and their installed packages
+  alias update='sudo -- sh -c "softwareupdate -i -a; /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -license accept ; if hash mas 2>/dev/null; then mas upgrade; fi; brew update; brew upgrade; brew cleanup; npm install npm -g; npm update -g; '
 
 	# Get local ip address
 	alias localip="ipconfig getifaddr $LOCAL_NET_IFACE"
