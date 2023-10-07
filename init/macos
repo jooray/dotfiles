@@ -909,18 +909,32 @@ defaults write com.twitter.twitter-mac ShowFullNames -bool true
 defaults write com.twitter.twitter-mac HideInBackground -bool true
 
 ###############################################################################
-# Tweetbot.app                                                                #
-###############################################################################
-
-# Bypass the annoyingly slow t.co URL shortener
-defaults write com.tapbots.TweetbotMac OpenURLsDirectly -bool true
-
-###############################################################################
 # QuickLook Color Code (quick view for source code in Finder)
 ###############################################################################
 defaults write org.n8gray.QLColorCode font Hack
 defaults write org.n8gray.QLColorCode fontSizePoints 12
 defaults write org.n8gray.QLColorCode hlTheme blacknblue
+
+###############################################################################
+# Privacy features
+###############################################################################
+
+# Disable Personalized advertisements and identifier collection
+defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
+defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
+defaults write com.apple.AdLib forceLimitAdTracking -bool true
+
+# Disable Internet based spell correction
+defaults write NSGlobalDomain WebAutomaticSpellingCorrectionEnabled -bool false
+
+# Disable Firefox telemetry:
+# -- Enable Firefox policies so the telemetry can be configured.
+sudo defaults write /Library/Preferences/org.mozilla.firefox EnterprisePoliciesEnabled -bool TRUE
+# -- Disable sending usage data
+sudo defaults write /Library/Preferences/org.mozilla.firefox DisableTelemetry -bool TRUE
+
+# Disable Microsoft Office diagnostics data sending
+defaults write com.microsoft.office DiagnosticDataTypePreference -string ZeroDiagnosticData
 
 ###############################################################################
 # Kill affected applications                                                  #
