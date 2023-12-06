@@ -182,6 +182,10 @@
 
 	templateDir = ~/.config/git/template/
 	defaultBranch = main
+
+[rerere]
+	enabled = true
+
 [include]
 
 		path = ~/.gitconfig.local
