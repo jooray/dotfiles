@@ -70,6 +70,7 @@ brew install moreutils
 brew install mosh
 brew install jq
 brew install wget
+brew install httpie
 
 # Install some CTF tools; see https://github.com/ctfs/write-ups.
 brew install aircrack-ng
