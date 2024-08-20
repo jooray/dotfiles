@@ -278,4 +278,4 @@ alias transfer='ffsend upload --copy'
 alias json='jq'
 
 # generate password
-alias pw='pwgen -cns -r "yzYZ" -B -1 12 1'
+alias pw='pwgen -cns -r "yzYZ" -B -1 16 1 | tee /dev/stderr | pbcopy'
