@@ -521,3 +521,21 @@ n ()
             rm -f "$NNN_TMPFILE" > /dev/null
     fi
 }
+
+# Concatenates the contents of specified text files along with their names
+# and copies the result to the clipboard. This function is intended to prepare
+# file contents in a format suitable for feeding to a language model prompt.
+# Usage: unapaster file1.txt file2.txt ...
+unapaster() {
+    local output=""
+    for file in "$@"; do
+        if [[ -f "$file" ]]; then
+            output+="File '$file':\n$(cat "$file")\n\n"
+        else
+            echo "Error: '$file' is not a valid file."
+            return 1
+        fi
+    done
+    echo -e "$output" | pbcopy
+}
+
