@@ -169,6 +169,8 @@ brew install magic-wormhole
 
 brew install nnn
 
+brew install ncdu
+
 cat << EOF
 
 For setup instructions for dnscrypt-proxy (encrypted DNS requests) read:
