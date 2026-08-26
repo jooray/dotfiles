@@ -170,9 +170,9 @@ function getcertnames() {
 # given location
 function v() {
     if [ $# -eq 0 ]; then
-        vim .
+        ${EDITOR:-vim} .
     else
-        vim "$@"
+        ${EDITOR:-vim} "$@"
     fi
 }
 
@@ -183,7 +183,9 @@ if [ ! $(uname -s) = 'Darwin' ]; then
         # Ubuntu on Windows using the Linux subsystem
         alias open='explorer.exe'
     else
-        alias open='xdg-open'
+        # Omarchy defines an `open` function that detaches from the terminal;
+        # only define ours when nothing else already provides `open`.
+        type open >/dev/null 2>&1 || alias open='xdg-open'
     fi
 fi
 
@@ -500,6 +502,9 @@ function nmapshodan() {
 }
 
 # run nnn file manager, on quit cd to the last directory
+# (only when nnn is installed — otherwise leave `n` to whatever provides it,
+# e.g. Omarchy's `n` -> nvim)
+if command -v nnn > /dev/null 2>&1; then
 n() {
     # Block nesting of nnn in subshells
     if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
@@ -516,6 +521,7 @@ n() {
         rm -f "$NNN_TMPFILE" >/dev/null
     fi
 }
+fi
 
 # Concatenates the contents of specified text files along with their names
 # and copies the result to the clipboard. This function is intended to prepare

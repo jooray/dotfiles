@@ -54,6 +54,34 @@ If you don't want to read about Sensible macOS defaults and homebrew setup, you 
 ./init/init.sh
 ```
 
+### Omarchy
+
+On [Omarchy](https://omarchy.org) these dotfiles are layered on top of the
+distro setup instead of replacing it. `~/.bashrc` sources Omarchy's
+`env-bootstrap` (so `OMARCHY_PATH` and the mise/`~/.local/bin` entries in
+`$PATH` exist even in non-interactive shells), and `~/.bash_profile` sources
+`$OMARCHY_PATH/default/bash/rc` *before* loading `~/.exports`, `~/.aliases`
+and friends. Everything Omarchy provides — mise, starship, zoxide, fzf, its
+aliases, functions and completions — stays; the dotfiles are simply loaded
+afterwards, so where the two disagree, these dotfiles win.
+
+The exceptions, where Omarchy's choice is deliberately kept:
+
+* **Prompt** — starship stays. Set `DOTFILES_PROMPT=1` in `~/.dotconf` or
+  `~/.extra` to use the Solarized prompt from `~/.bash_prompt` instead.
+* **`ls`** — remains Omarchy's `eza` alias. `l`, `ll`, `la` and `lsd` call
+  `command ls` explicitly, so they keep working.
+* **`man`** — an already-set `$MANPAGER` (Omarchy renders man pages through
+  `bat`) is left alone.
+* **`open` / `n`** — only defined here when nothing else provides them.
+
+`$EDITOR` is `vim`, falling back to `nvim` on systems that only ship Neovim;
+in that case `vim` and `vi` are aliased to `nvim` as well.
+
+`bootstrap.sh` keeps a copy of every file it replaces under
+`~/.dotfiles-backup/<timestamp>/`, so an existing `~/.bashrc` (Omarchy's, with
+whatever you added to it) is never lost silently.
+
 ### Sensible macOS defaults
 
 When setting up a new Mac, you may want to set some sensible macOS defaults:

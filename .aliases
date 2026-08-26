@@ -25,25 +25,33 @@ else # macOS `ls`
     export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
 fi
 
-if which vim >/dev/null 2>&1; then
+if type -P vim >/dev/null 2>&1; then
     alias vi=vim
+elif type -P nvim >/dev/null 2>&1; then
+    # Only Neovim is installed (e.g. Omarchy): let `vim` reach it, and `vi` too
+    # unless the system actually ships a `vi` binary.
+    alias vim=nvim
+    type -P vi >/dev/null 2>&1 || alias vi=nvim
 fi
 
 # alternative to tail -f
 alias lessf="less +F"
 
 # List all files colorized in long format
-alias l="ls -lF ${colorflag}"
-alias ll="ls -lahF ${colorflag}"
+# (`command ls` on purpose: on Omarchy `ls` is an alias for eza, which does not
+# understand these flags.)
+alias l="command ls -lF ${colorflag}"
+alias ll="command ls -lahF ${colorflag}"
 
 # List all files colorized in long format, excluding . and ..
-alias la="ls -lAF ${colorflag}"
+alias la="command ls -lAF ${colorflag}"
 
 # List only directories
-alias lsd="ls -lF ${colorflag} | grep --color=never '^d'"
+alias lsd="command ls -lF ${colorflag} | grep --color=never '^d'"
 
-# Always use color output for `ls`
-alias ls="command ls ${colorflag}"
+# Always use color output for `ls` — unless something already claimed it,
+# e.g. Omarchy's `ls` -> eza alias, which we leave in place.
+alias ls >/dev/null 2>&1 || alias ls="command ls ${colorflag}"
 
 # Always enable colored `grep` output
 # Note: `GREP_OPTIONS="--color=auto"` is deprecated, hence the alias usage.
@@ -186,7 +194,7 @@ if [ $(uname) == "Darwin" ]; then
     alias randmac='sudo ifconfig $LOCAL_NET_IFACE ether `openssl rand -hex 6 | sed "s/\(..\)/\1:/g;s/.$//"`'
 
     # Show active network interfaces
-    GRCAT=$(which grcat 2>/dev/null)
+    GRCAT=$(command -v grcat 2>/dev/null)
     if [ "$TERM" != dumb ] && [ -n "$GRCAT" ] && [ -r "$(brew --prefix)/share/grc/conf.ifconfig" ]; then
         alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active' | grcat $(brew --prefix)/share/grc/conf.ifconfig"
     else
@@ -243,16 +251,16 @@ elif [ $(uname) == "Linux" ]; then
     # Get local ip address
     alias localip="ifconfig $LOCAL_NET_IFACE | grep 'inet addr' | cut -d ':' -f 2 | cut -d ' ' -f 1"
 
-    if which yum >/dev/null 2>&1; then
+    if command -v yum >/dev/null 2>&1; then
         alias update='sudo yum update; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update; sudo gem cleanup'
-    elif which apt-get >/dev/null 2>&1; then
+    elif command -v apt-get >/dev/null 2>&1; then
         alias update='sudo apt-get update ; sudo apt-get -u upgrade; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update ; sudo gem cleanup'
     fi
 
-    if which xsel >/dev/null 2>&1; then
+    if command -v xsel >/dev/null 2>&1; then
         alias pbcopy='xsel -i -b'
         alias pbpaste='xsel -o -b'
-    elif which xclip >/dev/null 2>&1; then
+    elif command -v xclip >/dev/null 2>&1; then
         alias pbcopy='xclip -selection clipboard -i'
         alias pbpaste='xclip -selection clipboard -o'
     fi

@@ -12,8 +12,14 @@ then
   fi
 fi
 
-# Make vim the default editor.
-export EDITOR='vim';
+# Make vim the default editor, falling back to Neovim on systems that only ship
+# nvim (e.g. Omarchy). If neither is installed, leave whatever the system set
+# (Omarchy points EDITOR at `omarchy-launch-editor`).
+if type -P vim > /dev/null 2>&1; then
+	export EDITOR='vim';
+elif type -P nvim > /dev/null 2>&1; then
+	export EDITOR='nvim';
+fi;
 
 # Enable persistent REPL history for `node`.
 export NODE_REPL_HISTORY=~/.node_history;
@@ -29,16 +35,17 @@ export PYTHONIOENCODING='UTF-8';
 export LESS_TERMCAP_md="${yellow}";
 
 # Less settings
-if which less > /dev/null 2>&1;then
+if command -v less > /dev/null 2>&1;then
 	export PAGER="less"
 	export LESS="-R"
 	# nicer highlighting
-	if which src-hilite-lesspipe.sh > /dev/null 2>&1; then
+	if command -v src-hilite-lesspipe.sh > /dev/null 2>&1; then
 		export LESSOPEN="| src-hilite-lesspipe.sh %s"
 	fi
 
 	# Don’t clear the screen after quitting a manual page.
-	export MANPAGER='less -X';
+	# Keep an existing MANPAGER (Omarchy renders man pages through bat).
+	export MANPAGER="${MANPAGER:-less -X}";
 fi
 
 # Avoid issues with `gpg` as installed via Homebrew.
