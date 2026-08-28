@@ -539,3 +539,144 @@ unapaster() {
     done
     echo -e "$output" | pbcopy
 }
+
+# Sleep until a wall-clock time instead of a relative offset: `at`-style
+# scheduling, `sleep`-style blocking (no daemon, no job queue — it just waits in
+# the current shell). If the time has already passed today, it waits for the
+# next occurrence tomorrow.
+#
+#   sleepuntil 2:01          # 02:01, tonight or tomorrow morning
+#   sleepuntil 2am           # 12-hour clock, with or without a space
+#   sleepuntil "2:01 pm"     # 14:01
+#   sleepuntil 14:30:15      # seconds are optional
+#   sleepuntil noon          # also: midnight
+#   sleepuntil -q 3am && ./backup.sh
+#
+# Works with both BSD (macOS) and GNU (Linux) date. The wait is a loop of short
+# sleeps that re-checks the clock, so suspending the laptop or a system clock
+# change doesn't shift the wake-up time the way one long `sleep` would.
+
+# Parse "YYYY-MM-DD" + "HH:MM:SS" into seconds since the epoch (local time)
+_sleepuntil_epoch() {
+    local h m s midnight
+    if date --version >/dev/null 2>&1; then              # GNU
+        date -d "$1 $2" +%s 2>/dev/null && return 0
+        # GNU date rejects a local time that doesn't exist (the hour skipped on
+        # the spring-forward night); count from midnight instead, which lands on
+        # the same instant BSD date picks in that case.
+        IFS=: read -r h m s <<< "$2"
+        midnight="$(date -d "$1 00:00:00" +%s)" || return 1
+        echo $((midnight + 10#$h * 3600 + 10#$m * 60 + 10#$s))
+    else
+        date -j -f '%Y-%m-%d %H:%M:%S' "$1 $2" +%s      # BSD
+    fi
+}
+
+# The day after "YYYY-MM-DD"
+_sleepuntil_nextday() {
+    if date --version >/dev/null 2>&1; then
+        date -d "$1 + 1 day" +%F                        # GNU
+    else
+        date -j -f '%Y-%m-%d' -v+1d "$1" +%F            # BSD
+    fi
+}
+
+# Epoch seconds as human-readable local time
+_sleepuntil_fmt() {
+    if date --version >/dev/null 2>&1; then
+        date -d "@$1"                                   # GNU
+    else
+        date -r "$1"                                    # BSD
+    fi
+}
+
+sleepuntil() {
+    local quiet=0
+    while [ "$1" = "-q" ] || [ "$1" = "--quiet" ]; do
+        quiet=1
+        shift
+    done
+
+    # Fold the whole argument list into one lowercase token, so `2am`, `2 am`
+    # and `2 a.m.` all end up looking the same.
+    local spec
+    spec="$(printf '%s' "$*" | tr '[:upper:]' '[:lower:]' | tr -d ' .')"
+
+    if [ -z "$spec" ] || [ "$spec" = "-h" ] || [ "$spec" = "--help" ]; then
+        echo "usage: sleepuntil [-q] <time>   e.g. 2:01, 2am, '2:01 pm', 14:30:15, noon, midnight" >&2
+        return 1
+    fi
+
+    case "$spec" in
+        noon)     spec="12:00" ;;
+        midnight) spec="00:00" ;;
+    esac
+
+    local meridiem=""
+    case "$spec" in
+        *am) meridiem="am"; spec="${spec%am}" ;;
+        *pm) meridiem="pm"; spec="${spec%pm}" ;;
+    esac
+
+    local h m s
+    if [[ "$spec" =~ ^([0-9]{1,2})(:([0-9]{1,2}))?(:([0-9]{1,2}))?$ ]]; then
+        h=$((10#${BASH_REMATCH[1]}))
+        m=$((10#${BASH_REMATCH[3]:-0}))
+        s=$((10#${BASH_REMATCH[5]:-0}))
+    else
+        echo "sleepuntil: don't understand the time '$*'" >&2
+        return 1
+    fi
+
+    case "$meridiem" in
+        am|pm)
+            if [ "$h" -lt 1 ] || [ "$h" -gt 12 ]; then
+                echo "sleepuntil: '$*' is not a valid 12-hour time" >&2
+                return 1
+            fi
+            if [ "$meridiem" = "am" ] && [ "$h" -eq 12 ]; then
+                h=0
+            elif [ "$meridiem" = "pm" ] && [ "$h" -ne 12 ]; then
+                h=$((h + 12))
+            fi
+            ;;
+        *)
+            if [ "$h" -gt 23 ]; then
+                echo "sleepuntil: '$*' is not a valid 24-hour time" >&2
+                return 1
+            fi
+            ;;
+    esac
+
+    if [ "$m" -gt 59 ] || [ "$s" -gt 59 ]; then
+        echo "sleepuntil: '$*' is not a valid time" >&2
+        return 1
+    fi
+
+    local hms today now target
+    printf -v hms '%02d:%02d:%02d' "$h" "$m" "$s"
+    today="$(date +%F)"
+    target="$(_sleepuntil_epoch "$today" "$hms")" || return 1
+    now="$(date +%s)"
+
+    # Already gone today? Take the same wall-clock time tomorrow — computed from
+    # the calendar date rather than by adding 86400, so DST changes don't drift.
+    if [ "$target" -le "$now" ]; then
+        target="$(_sleepuntil_epoch "$(_sleepuntil_nextday "$today")" "$hms")" || return 1
+    fi
+
+    if [ "$quiet" -eq 0 ]; then
+        local left=$((target - now))
+        printf 'sleepuntil: waiting until %s (%dh %dm %ds)\n' \
+            "$(_sleepuntil_fmt "$target")" \
+            $((left / 3600)) $((left % 3600 / 60)) $((left % 60)) >&2
+    fi
+
+    local remaining
+    while :; do
+        remaining=$((target - $(date +%s)))
+        [ "$remaining" -le 0 ] && break
+        [ "$remaining" -gt 60 ] && remaining=60
+        sleep "$remaining"
+    done
+}
