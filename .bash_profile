@@ -115,6 +115,9 @@ if [ $(uname) == "Darwin" ]
 
 [ -e "$HOME/.z.sh" ] && . $HOME/.z.sh
 
+# tmux-wake / herdr-wake (submodule, synced to ~/vendor/tmux-wake by bootstrap.sh)
+[ -r "$HOME/vendor/tmux-wake/wake.sh" ] && source "$HOME/vendor/tmux-wake/wake.sh"
+
 # Omarchy applies its own readline config with `bind -f`, which happens *after*
 # readline has already read ~/.inputrc. Re-apply ours on top so our keybindings
 # win where the two overlap (Omarchy-only bindings, e.g. TAB cycling, survive).

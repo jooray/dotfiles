@@ -7,3 +7,7 @@
 [submodule ".vim/pack/dotfiles/start/plaintasks.vim"]
 	path = .vim/pack/dotfiles/start/plaintasks.vim
 	url = https://github.com/elentok/plaintasks.vim
+[submodule "vendor/tmux-wake"]
+	path = vendor/tmux-wake
+	url = git@github.com:jooray/tmux-wake.git
+	branch = main
