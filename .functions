@@ -480,16 +480,26 @@ function vcssh {
 # cryptocurrency conversions
 function sattobtc() { calc "$1" '/' 100000000 | tee >(pbcopy); }
 function btctosat() { calc "$1" '*' 100000000 | tee >(pbcopy); }
-function eurtobtc() { curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")EUR | tee >(pbcopy); }
-function eurtosat() { calc $(curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")EUR) '*' 100000000 | sed -e 's/\..*//' | tee >(pbcopy); }
-function btctoeur() { curl -A cURL -s https://eur.rate.sx/$(urlencode "$1")BTC | tee >(pbcopy); }
-function usdtobtc() { curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")USD | tee >(pbcopy); }
-function usdtosat() { calc $(curl -A cURL -s https://btc.rate.sx/$(urlencode "$1")USD) '*' 100000000 | sed -e 's/\..*//' | tee >(pbcopy); }
-function btctousd() { curl -A cURL -s https://usd.rate.sx/$(urlencode "$1")BTC | tee >(pbcopy); }
-function eurtoxmr() { curl -A cURL -s https://xmr.rate.sx/$(urlencode "$1")EUR | tee >(pbcopy); }
-function xmrtoeur() { curl -A cURL -s https://eur.rate.sx/$(urlencode "$1")XMR | tee >(pbcopy); }
-function usdtoxmr() { curl -A cURL -s https://xmr.rate.sx/$(urlencode "$1")USD | tee >(pbcopy); }
-function xmrtousd() { curl -A cURL -s https://usd.rate.sx/$(urlencode "$1")XMR | tee >(pbcopy); }
+# cryptocurrency conversions (BTC via Coinbase spot prices, XMR via Kraken)
+function btcprice() { curl -A cURL -s "https://api.coinbase.com/v2/prices/BTC-$1/spot" | jq -r .data.amount; }
+function zecprice() { curl -A cURL -s "https://api.coinbase.com/v2/prices/ZEC-$1/spot" | jq -r .data.amount; }
+function xmrprice() { curl -A cURL -s "https://api.kraken.com/0/public/Ticker?pair=XMR$1" | jq -r '.result[.result|keys[0]].c[0]'; }
+function btctoeur() { calc "$(btcprice EUR)" '*' "$1" | tee >(pbcopy); }
+function eurtobtc() { calc "$1" '/' "$(btcprice EUR)" | tee >(pbcopy); }
+function btctousd() { calc "$(btcprice USD)" '*' "$1" | tee >(pbcopy); }
+function usdtobtc() { calc "$1" '/' "$(btcprice USD)" | tee >(pbcopy); }
+function sattoeur() { calc "$1" '*' "$(btcprice EUR)" '/' 100000000 | tee >(pbcopy); }
+function sattousd() { calc "$1" '*' "$(btcprice USD)" '/' 100000000 | tee >(pbcopy); }
+function eurtosat() { calc "$1" '*' 100000000 '/' "$(btcprice EUR)" | sed -e 's/\..*//' | tee >(pbcopy); }
+function usdtosat() { calc "$1" '*' 100000000 '/' "$(btcprice USD)" | sed -e 's/\..*//' | tee >(pbcopy); }
+function zectoeur() { calc "$(zecprice EUR)" '*' "$1" | tee >(pbcopy); }
+function eurtozec() { calc "$1" '/' "$(zecprice EUR)" | tee >(pbcopy); }
+function zectousd() { calc "$(zecprice USD)" '*' "$1" | tee >(pbcopy); }
+function usdtozec() { calc "$1" '/' "$(zecprice USD)" | tee >(pbcopy); }
+function xmrtoeur() { calc "$(xmrprice EUR)" '*' "$1" | tee >(pbcopy); }
+function eurtoxmr() { calc "$1" '/' "$(xmrprice EUR)" | tee >(pbcopy); }
+function xmrtousd() { calc "$(xmrprice USD)" '*' "$1" | tee >(pbcopy); }
+function usdtoxmr() { calc "$1" '/' "$(xmrprice USD)" | tee >(pbcopy); }
 
 # nmap through shodan
 function nmapshodan() {
