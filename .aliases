@@ -257,7 +257,12 @@ elif [ $(uname) == "Linux" ]; then
         alias update='sudo apt-get update ; sudo apt-get -u upgrade; npm install npm -g; npm update -g; sudo gem update --system; sudo gem update ; sudo gem cleanup'
     fi
 
-    if command -v xsel >/dev/null 2>&1; then
+    # Wayland first: wl-clipboard is the native path on Wayland compositors
+    # (e.g. Omarchy/Hyprland), where xsel/xclip may not be installed.
+    if [ -n "${WAYLAND_DISPLAY:-}" ] && command -v wl-copy >/dev/null 2>&1; then
+        alias pbcopy='wl-copy'
+        alias pbpaste='wl-paste --no-newline'
+    elif command -v xsel >/dev/null 2>&1; then
         alias pbcopy='xsel -i -b'
         alias pbpaste='xsel -o -b'
     elif command -v xclip >/dev/null 2>&1; then
