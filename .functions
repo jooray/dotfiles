@@ -4,10 +4,21 @@ function calc() {
 
     local result=""
 
-    #                       ┌─ default (when --mathlib is used) is 20
-    result="$(printf "scale=10;%s\n" "$*" | bc --mathlib | tr -d "\\\n")"
-    #                         remove the tailing "\" and "\n" ─┘
-    #                         (large numbers are printed on multiple lines)
+    if command -v bc >/dev/null 2>&1; then
+
+        #                       ┌─ default (when --mathlib is used) is 20
+        result="$(printf "scale=10;%s\n" "$*" | bc --mathlib | tr -d "\\\n")"
+        #                         remove the tailing "\" and "\n" ─┘
+        #                         (large numbers are printed on multiple lines)
+
+    else
+
+        # Fallback for systems without bc (Arch/Omarchy ships gawk, macOS ships
+        # BSD awk). Rounds at the 10th decimal where bc would truncate; the
+        # sed cleanup below then produces the same shape of output.
+        result="$(LC_ALL=C awk "BEGIN { printf \"%.10f\n\", $* }" 2>/dev/null)"
+
+    fi
 
     if [[ "$result" == *.* ]]; then
 
@@ -117,9 +128,9 @@ function phpserver() {
 function gz() {
     local origsize=$(wc -c <"$1")
     local gzipsize=$(gzip -c "$1" | wc -c)
-    local ratio=$(LC_ALL="en_US" echo "$gzipsize * 100 / $origsize" | bc -l)
+    local ratio=$(calc "$gzipsize" '*' 100 '/' "$origsize")
     printf "orig: %d bytes\n" "$origsize"
-    LC_ALL="en_US" printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
+    LC_NUMERIC=C printf "gzip: %d bytes (%2.2f%%)\n" "$gzipsize" "$ratio"
 }
 
 # Run `dig` and display the most useful info
